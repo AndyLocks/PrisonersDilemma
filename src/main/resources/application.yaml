@@ -1,0 +1,14 @@
+spring:
+  main:
+    banner-mode: "off"
+  application:
+    name: prisoners_dilemma
+
+logging:
+  level:
+    root: OFF
+  file:
+    name: prisoners_dilemma.log
+  logback:
+    rollingpolicy:
+      max-file-size: 5000000
