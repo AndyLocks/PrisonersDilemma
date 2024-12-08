@@ -37,4 +37,9 @@ public enum Factories {
     public static List<? extends StrategyFactory<? extends Strategy>> all() {
         return new ArrayList<>(allStandardStrategyFactories);
     }
+
+    public StrategyFactory<? extends Strategy> getStrategyFactory() {
+        return strategyFactory;
+    }
+
 }
