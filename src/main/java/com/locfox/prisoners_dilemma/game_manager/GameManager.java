@@ -61,6 +61,15 @@ import java.util.Collection;
 /// gameManager.play(strategyFactories);
 /// ```
 ///
+/// ## Example 3
+///
+/// ```java
+/// gameManager.play(
+///     TitForTatStrategyFactory::instance,
+///     AlwaysDefectStrategyFactory::instance
+/// );
+/// ```
+///
 ///
 /// # See also
 ///
