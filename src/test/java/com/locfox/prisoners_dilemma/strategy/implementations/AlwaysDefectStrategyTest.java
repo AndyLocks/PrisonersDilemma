@@ -1,6 +1,7 @@
 package com.locfox.prisoners_dilemma.strategy.implementations;
 
 import com.locfox.prisoners_dilemma.strategy_factory.implementations.AlwaysDefectStrategyFactory;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +19,11 @@ class AlwaysDefectStrategyTest {
         for (int i = 0; i < 50; i++) {
             assertFalse(strategy.cooperates(false));
         }
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        AlwaysDefectStrategyFactory.instance().getScoreCounter().reset();
     }
 
 }
