@@ -1,6 +1,7 @@
 package com.locfox.prisoners_dilemma.strategy.implementations;
 
 import com.locfox.prisoners_dilemma.strategy_factory.implementations.AlwaysCooperateStrategyFactory;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,6 +20,11 @@ class AlwaysCooperateStrategyTest {
             assertTrue(strategy.cooperates(false));
         }
 
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        AlwaysCooperateStrategyFactory.instance().getScoreCounter().reset();
     }
   
 }
