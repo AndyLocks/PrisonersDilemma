@@ -13,6 +13,5 @@ public class AlwaysDefectStrategyFactory implements StrategyFactory<AlwaysDefect
     @Override
     public AlwaysDefectStrategy get() {
         return AlwaysDefectStrategyFactory.instance();
-
     }
 }
