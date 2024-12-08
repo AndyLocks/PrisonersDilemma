@@ -2,6 +2,7 @@ package com.locfox.prisoners_dilemma.score_counter;
 
 import com.locfox.prisoners_dilemma.strategy_info.StrategyInfo;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /// Standard score counter
@@ -65,4 +66,17 @@ public class DefaultScoreCounterImpl<T extends StrategyInfo> implements ScoreCou
     public int getPoints() {
         return points.get();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        DefaultScoreCounterImpl<?> that = (DefaultScoreCounterImpl<?>) o;
+        return Objects.equals(strategyInfo, that.strategyInfo) && points.get() == that.points.get();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(strategyInfo, points);
+    }
+
 }
