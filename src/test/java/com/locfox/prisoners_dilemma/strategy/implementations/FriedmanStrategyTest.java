@@ -1,6 +1,7 @@
 package com.locfox.prisoners_dilemma.strategy.implementations;
 
 import com.locfox.prisoners_dilemma.strategy_factory.implementations.FriedmanStrategyFactory;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,5 +21,11 @@ class FriedmanStrategyTest {
         }
 
     }
+
+    @AfterAll
+    public static void afterAll() {
+        FriedmanStrategyFactory.instance().getScoreCounter().reset();
+    }
+
 
 }
