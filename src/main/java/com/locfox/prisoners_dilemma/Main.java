@@ -5,6 +5,7 @@ import com.locfox.prisoners_dilemma.game_manager.GameManagers;
 import com.locfox.prisoners_dilemma.score_counter.ScoreCounter;
 import com.locfox.prisoners_dilemma.strategy.Strategy;
 import com.locfox.prisoners_dilemma.strategy_factory.StrategyFactory;
+import com.locfox.prisoners_dilemma.strategy_info.StrategyInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -28,11 +29,9 @@ public class Main implements CommandLineRunner {
         strategyFactories.stream()
                 .map(Supplier::get)
                 .flatMap(s -> s.getScoreCounter().asStream())
-                .sorted(Comparator.comparingInt(ScoreCounter::getPoints))
+                .sorted(Comparator.<ScoreCounter<? extends StrategyInfo>>comparingInt(ScoreCounter::getPoints).reversed())
                 .forEach(scoreCounter -> {
-                    System.out.println(
-                            String.format("%s (%s): %d", scoreCounter.getStrategyInfo().name(), scoreCounter.getStrategyInfo().description(), scoreCounter.getPoints())
-                    );
+                    System.out.printf("%s (%s): %d%n", scoreCounter.getStrategyInfo().name(), scoreCounter.getStrategyInfo().description(), scoreCounter.getPoints());
                 });
     }
 
