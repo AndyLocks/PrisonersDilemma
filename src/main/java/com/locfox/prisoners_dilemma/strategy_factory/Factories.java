@@ -34,6 +34,7 @@ public enum Factories {
             new TitForTwoTatsStrategyFactory()
     );
 
+    /// @return a copy of the list of all standard strategy implementations
     public static List<? extends StrategyFactory<? extends Strategy>> all() {
         return new ArrayList<>(ALL_STANDARD_STRATEGY_FACTORIES);
     }
