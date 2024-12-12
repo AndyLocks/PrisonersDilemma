@@ -22,15 +22,6 @@ import java.util.function.Supplier;
 ///
 /// @param <T> a strategy to return
 public interface StrategyFactory<T extends Strategy> extends Supplier<T> {
-    @Deprecated(forRemoval = true)
-    static StrategyFactory<Strategy> instance(Supplier<Strategy> supplier) {
-        return new StrategyFactory<Strategy>() {
-            @Override
-            public Strategy get() {
-                return supplier.get();
-            }
-        };
-    }
     /// Returns a new {@link Strategy} object ready for use.
     ///
     /// @return a {@link Strategy} object
