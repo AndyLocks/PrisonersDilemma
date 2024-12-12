@@ -31,6 +31,10 @@ private static final ScoreCounter<DefaultStrategyInfoImpl> scoreCounter =
 
 ## GameManager
 
+`GameManager` отвечает за игровые правила и управляет ходом игры.
+
+---
+
 Также можно имплементировать интерфейс `GameManager` для создания своих игровых правил.
 Также можно посмотреть в класс `GameManagers`. В нем могут быть несколько реализаций включая стандартную.
 
@@ -62,6 +66,28 @@ var factories = GameManagers.withDefaults().play(
                 .build());
 ```
 
+Также вместо использования `StrategyBuilder` можно использовать уже существующие стратегии:
+
+```java
+var factories = GameManagers.withDefaults().play(
+        TitForTatStrategyFactory::instance,
+        AlwaysDefectStrategyFactory::instance);
+```
+
+Позже результаты можно вывести в консоль:
+
+```java
+strategyFactories.stream()
+        .map(Supplier::get)
+        .flatMap(s -> s.getScoreCounter().asStream())
+        .sorted(Comparator.<ScoreCounter<? extends StrategyInfo>>comparingInt(ScoreCounter::getPoints).reversed())
+        .forEach(scoreCounter -> {
+            System.out.printf("%s (%s): %d%n", scoreCounter.getStrategyInfo().name(), scoreCounter.getStrategyInfo().description(), scoreCounter.getPoints());
+        });
+```
+
+---
+
 Очень важно, чтобы игровой менеджер перед каждым новым раундом создавал новую стратегию с помощью предоставленных фабрик.
 Каждая стратегия может иметь состояние, в котором запоминает поведение оппонента во время раунда. Для того, что-бы это состояние обнулялось, важно создавать каждый раз новую стратегию.
 По этой причине у каждой стратегии определенного типа должен быть свой `ScoreCounter`. Например у всех стратегий `RandomStrategy` всегда один и тот же объект `ScoreCounter`.
@@ -83,6 +109,16 @@ var strategy = StrategyBuilder.builder()
 ```java
 var someScoreCounter = ScoreCounters.withDefaults(
         StrategyInfo.withDefaults("Some Strategy", "Some description"));
+```
+
+Также в интерфейсе `Strategy` есть метод для получения `StrategyBuilder`:
+
+```java
+var strategy = Strategy.builder()
+        .initialStrategy(() -> true)
+        .cooperates(opponentsPreviousAction -> true)
+        .scoreCounter(someScoreCounter)
+        .build();
 ```
 
 Вы также можете сделать свой вариант `ScoreCounter`. 
@@ -136,6 +172,25 @@ factories.stream()
             System.out.println(
                     String.format("%s (%s): %d", scoreCounter.getStrategyInfo().name(), scoreCounter.getStrategyInfo().description(), scoreCounter.getPoints())
             );
+        });
+```
+
+---
+
+```java
+var factories = Factories.all().stream()
+        .filter(s -> s.getClass() == TitForTatStrategyFactory.class ||
+                s.getClass() == AlwaysDefectStrategyFactory.class)
+        .toList();
+
+GameManagers.withDefaults().play(factories);
+
+factories.stream()
+        .map(Supplier::get)
+        .flatMap(s -> s.getScoreCounter().asStream())
+        .sorted(Comparator.<ScoreCounter<? extends StrategyInfo>>comparingInt(ScoreCounter::getPoints).reversed())
+        .forEach(scoreCounter -> {
+            System.out.printf("%s (%s): %d%n", scoreCounter.getStrategyInfo().name(), scoreCounter.getStrategyInfo().description(), scoreCounter.getPoints());
         });
 ```
 
