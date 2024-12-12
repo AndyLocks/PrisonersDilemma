@@ -23,7 +23,7 @@ public enum Factories {
         this.strategyFactory = strategyFactory;
     }
 
-    private static final List<? extends StrategyFactory<? extends Strategy>> allStandardStrategyFactories = List.of(
+    private static final List<? extends StrategyFactory<? extends Strategy>> ALL_STANDARD_STRATEGY_FACTORIES = List.of(
             new AlwaysCooperateStrategyFactory(),
             new AlwaysDefectStrategyFactory(),
             new FriedmanStrategyFactory(),
@@ -35,7 +35,7 @@ public enum Factories {
     );
 
     public static List<? extends StrategyFactory<? extends Strategy>> all() {
-        return new ArrayList<>(allStandardStrategyFactories);
+        return new ArrayList<>(ALL_STANDARD_STRATEGY_FACTORIES);
     }
 
     public StrategyFactory<? extends Strategy> getStrategyFactory() {
