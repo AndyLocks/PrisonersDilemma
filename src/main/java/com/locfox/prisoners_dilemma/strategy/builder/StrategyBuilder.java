@@ -1,6 +1,8 @@
 package com.locfox.prisoners_dilemma.strategy.builder;
 
 import com.locfox.prisoners_dilemma.score_counter.ScoreCounter;
+import com.locfox.prisoners_dilemma.score_counter.score_counter_creator.ScoreCounterCreator;
+import com.locfox.prisoners_dilemma.score_counter.score_counter_creator.ScoreCounterCreators;
 import com.locfox.prisoners_dilemma.strategy.Strategy;
 import com.locfox.prisoners_dilemma.strategy_factory.factory_creator.CooperationStrategy;
 import com.locfox.prisoners_dilemma.strategy_info.StrategyInfo;
@@ -12,17 +14,18 @@ import java.util.function.BooleanSupplier;
 ///
 /// # Example
 /// ```java
-/// var strategy = StrategyBuilder.builder()
-///     .initialStrategy(() -> true)
-///     .cooperates(opponentsPreviousAction -> true)
-///     .scoreCounter(someScoreCounter)
-///     .build();
-///```
+/// var titForTat = StrategyBuilder.builder()
+///                 .initialStrategy(() -> true)
+///                 .cooperates(opponentsPreviousAction -> opponentsPreviousAction)
+///                 .info(StrategyInfo.withDefaults("Tit for tat", "Returns exactly the opponent's previous answer"))
+///                 .build();
+/// ```
 public class StrategyBuilder {
 
     private CooperationStrategy cooperationStrategy;
     private BooleanSupplier initialCooperationStrategy;
-    private ScoreCounter<? extends StrategyInfo> scoreCounter;
+    private ScoreCounterCreator scoreCounterCreator = ScoreCounterCreators.withDefaults();
+    private StrategyInfo strategyInfo;
 
     public static StrategyBuilder builder() {
         return new StrategyBuilder();
@@ -46,14 +49,22 @@ public class StrategyBuilder {
         return this;
     }
 
-    /// Sets a score counter and returns the builder
+    /// Changes the implementation of [ScoreCounterCreator]
     ///
-    /// @param scoreCounter a score counter to set
-    /// @return this builder with the score counter
-    /// @see com.locfox.prisoners_dilemma.score_counter.ScoreCounters#withDefaults(StrategyInfo)
-    /// @see StrategyInfo#withDefaults(String, String)
-    public StrategyBuilder scoreCounter(ScoreCounter<? extends StrategyInfo> scoreCounter) {
-        this.scoreCounter = scoreCounter;
+    /// By default: [ScoreCounterCreators#withDefaults()] ([com.locfox.prisoners_dilemma.score_counter.score_counter_creator.DefaultScoreCounterCreatorImpl])
+    ///
+    /// @see ScoreCounterCreator
+    public StrategyBuilder scoreCounterCreator(ScoreCounterCreator scoreCounterCreator) {
+        this.scoreCounterCreator = scoreCounterCreator;
+        return this;
+    }
+
+    /// Sets strategy information
+    ///
+    /// This is necessary to display information about the strategy and also to compare it with other strategies.
+    /// In some standard implementations, the information determines what [ScoreCounter] will be issued.
+    public StrategyBuilder info(StrategyInfo strategyInfo) {
+        this.strategyInfo = strategyInfo;
         return this;
     }
 
@@ -62,7 +73,7 @@ public class StrategyBuilder {
     public Strategy build() {
         Assert.notNull(this.cooperationStrategy, "Cooperation strategy must not be null");
         Assert.notNull(this.initialCooperationStrategy, "Initial cooperation strategy must not be null");
-        Assert.notNull(this.scoreCounter, "Score counter must not be null");
+        Assert.notNull(this.strategyInfo, "Strategy info must not be null");
 
         return new Strategy() {
             @Override
@@ -77,7 +88,7 @@ public class StrategyBuilder {
 
             @Override
             public ScoreCounter<? extends StrategyInfo> getScoreCounter() {
-                return scoreCounter;
+                return scoreCounterCreator.createOrGet(strategyInfo);
             }
 
             @Override
@@ -88,6 +99,11 @@ public class StrategyBuilder {
             @Override
             public boolean equals(Object o) {
                 return o != null && getClass() == o.getClass();
+            }
+
+            @Override
+            public String toString() {
+                return String.format("Info [%s] Points [%d]", strategyInfo.name(), getScoreCounter().getPoints());
             }
 
         };
