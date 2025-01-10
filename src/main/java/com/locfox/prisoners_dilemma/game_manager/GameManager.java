@@ -23,35 +23,27 @@ import java.util.Collection;
 ///
 /// It is advisable to create a new {@link Strategy} every round with each game using {@link StrategyFactory}.
 ///
-/// # Example
+/// # Examples
 ///
 /// ## Example 1
 ///
 /// ```java
-/// var alwaysCooperateScoreCounter = ScoreCounters.withDefaults(
-///         StrategyInfo.withDefaults("Always cooperate", "Always cooperates"));
-/// var friedmanScoreCounter = ScoreCounters.withDefaults(
-///         StrategyInfo.withDefaults("Friedman", "Never cooperates"));
-/// var titForTatScoreCounter = ScoreCounters.withDefaults(
-///         StrategyInfo.withDefaults("Tit for tat", "Returns exactly the opponent's previous answer"));
-///
 /// var factories = GameManagers.withDefaults().play(
-///         () -> StrategyBuilder.builder()
-///                 .initialStrategy(() -> true)
-///                 .cooperates(opponentsPreviousAction -> true)
-///                 .scoreCounter(alwaysCooperateScoreCounter)
-///                 .build(),
-///         () -> StrategyBuilder.builder()
-///                 .initialStrategy(() -> false)
-///                 .cooperates(opponentsPreviousAction -> false)
-///                 .scoreCounter(friedmanScoreCounter)
-///                 .build(),
-///         () -> StrategyBuilder.builder()
-///                 .initialStrategy(() -> true)
-///                 .cooperates(opponentsPreviousAction -> opponentsPreviousAction)
-///                 .scoreCounter(titForTatScoreCounter)
-///                .build()
-/// );
+///                 () -> StrategyBuilder.builder()
+///                         .initialStrategy(() -> true)
+///                         .cooperates(opponentsPreviousAction -> true)
+///                         .info(StrategyInfo.withDefaults("Always cooperate", "Always cooperates"))
+///                         .build(),
+///                 () -> StrategyBuilder.builder()
+///                         .initialStrategy(() -> false)
+///                         .cooperates(opponentsPreviousAction -> false)
+///                         .info(StrategyInfo.withDefaults("Always defect", "Never cooperates"))
+///                         .build(),
+///                 () -> StrategyBuilder.builder()
+///                         .initialStrategy(() -> true)
+///                         .cooperates(opponentsPreviousAction -> opponentsPreviousAction)
+///                         .info(StrategyInfo.withDefaults("Tit for tat", "Returns exactly the opponent's previous answer"))
+///                         .build());
 /// ```
 ///
 /// ## Example 2
@@ -66,8 +58,7 @@ import java.util.Collection;
 /// ```java
 /// gameManager.play(
 ///     TitForTatStrategyFactory::instance,
-///     AlwaysDefectStrategyFactory::instance
-/// );
+///     AlwaysDefectStrategyFactory::instance);
 /// ```
 ///
 ///
