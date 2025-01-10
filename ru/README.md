@@ -41,29 +41,22 @@ private static final ScoreCounter<DefaultStrategyInfoImpl> scoreCounter =
 Позже этот игровой менеджер можно будет использовать так:
 
 ```java
-var alwaysCooperateScoreCounter = ScoreCounters.withDefaults(
-        StrategyInfo.withDefaults("Always cooperate", "Always cooperates"));
-var friedmanScoreCounter = ScoreCounters.withDefaults(
-        StrategyInfo.withDefaults("Friedman", "Never cooperates"));
-var titForTatScoreCounter = ScoreCounters.withDefaults(
-        StrategyInfo.withDefaults("Tit for tat", "Returns exactly the opponent's previous answer"));
-
 var factories = GameManagers.withDefaults().play(
-        () -> StrategyBuilder.builder()
-                .initialStrategy(() -> true)
-                .cooperates(opponentsPreviousAction -> true)
-                .scoreCounter(alwaysCooperateScoreCounter)
-                .build(),
-        () -> StrategyBuilder.builder()
-                .initialStrategy(() -> false)
-                .cooperates(opponentsPreviousAction -> false)
-                .scoreCounter(friedmanScoreCounter)
-                .build(),
-        () -> StrategyBuilder.builder()
-                .initialStrategy(() -> true)
-                .cooperates(opponentsPreviousAction -> opponentsPreviousAction)
-                .scoreCounter(titForTatScoreCounter)
-                .build());
+                 () -> StrategyBuilder.builder()
+                         .initialStrategy(() -> true)
+                         .cooperates(opponentsPreviousAction -> true)
+                         .info(StrategyInfo.withDefaults("Always cooperate", "Always cooperates"))
+                         .build(),
+                 () -> StrategyBuilder.builder()
+                         .initialStrategy(() -> false)
+                         .cooperates(opponentsPreviousAction -> false)
+                         .info(StrategyInfo.withDefaults("Always defect", "Never cooperates"))
+                         .build(),
+                 () -> StrategyBuilder.builder()
+                         .initialStrategy(() -> true)
+                         .cooperates(opponentsPreviousAction -> opponentsPreviousAction)
+                         .info(StrategyInfo.withDefaults("Tit for tat", "Returns exactly the opponent's previous answer"))
+                         .build());
 ```
 
 Также вместо использования `StrategyBuilder` можно использовать уже существующие стратегии:
@@ -97,35 +90,50 @@ strategyFactories.stream()
 Вы также можете создавать анонимные стратегии с помощью `StrategyBuilder`:
 
 ```java
-var strategy = StrategyBuilder.builder()
-        .initialStrategy(() -> true)
-        .cooperates(opponentsPreviousAction -> true)
-        .scoreCounter(someScoreCounter)
-        .build();
-```
-
-Для такой реализации вам понадобится иметь ровно один `ScoreCounter` для определенных стратегий:
-
-```java
-var someScoreCounter = ScoreCounters.withDefaults(
-        StrategyInfo.withDefaults("Some Strategy", "Some description"));
+var titForTat = StrategyBuilder.builder()
+                .initialStrategy(() -> true)
+                .cooperates(opponentsPreviousAction -> opponentsPreviousAction)
+                .info(StrategyInfo.withDefaults("Tit for tat", "Returns exactly the opponent's previous answer"))
+                .build();
 ```
 
 Также в интерфейсе `Strategy` есть метод для получения `StrategyBuilder`:
 
 ```java
-var strategy = Strategy.builder()
-        .initialStrategy(() -> true)
-        .cooperates(opponentsPreviousAction -> true)
-        .scoreCounter(someScoreCounter)
-        .build();
+var titForTat = Strategy.builder()
+                .initialStrategy(() -> true)
+                .cooperates(opponentsPreviousAction -> opponentsPreviousAction)
+                .info(StrategyInfo.withDefaults("Tit for tat", "Returns exactly the opponent's previous answer"))
+                .build();
 ```
 
-Вы также можете сделать свой вариант `ScoreCounter`. 
+В `StrategyBuilder` также есть возможность поменять `ScoreCounterCreator`:
+
+```java
+var titForTatStrategy = StrategyBuilder.builder()
+                .info(StrategyInfo.withDefaults("Tit for tat", "made with builder"))
+                .scoreCounterCreator(ScoreCounters::withDefaults)
+                .initialStrategy(() -> true)
+                .cooperates(opponentsPreviousAction -> opponentsPreviousAction)
+                .build();
+```
+
+### ScoreCounterCreator
+
+Здесь, в методе `scoureCounterCreator` можно передать одну из реализаций. Их можно найти в классе `ScoreCounterCreators`
+или описать с помощью лямбда выражения, так как по сути этот класс является функцией.
+
+`ScoreCounterCreator` используется для преобразования из информации (`StrategyInfo`) в `ScoureCounter`,
+который в свою очередь считает очки. У каждого вида стратегии должен быть одинаковый счетчик.
+`ScoreCounerCreator` по сути запоминает, какой информации `StrategyInfo` принадлежит какой счетчик `ScoreCounter` и выдает его или создает.
+
+В идеальной имплементации `ScoreCounterCreator` должен возвращать один и тот же `ScoreCounter` по `StrategyInfo` сравненному с помощью метода `Object#equals(Object)`.
 
 ## Factories
 
-Есть enum `Factories` который содержит все существующие стандартные фабрики. В этом enum также есть метод `Factories.all()` который возвращает все фабрики списком и с ними можно удобно работать:
+`Factories` содержит все существующие стандартные фабрики.
+
+В этом enum также есть метод `Factories.all()` который возвращает все фабрики списком и с ними можно удобно работать:
 
 ```java
 GameManagers.withDefaults().play(Factories.all());
@@ -155,11 +163,10 @@ Factories.all().stream()
 ```java
 var factories = Factories.all();
 
-factories.add(
-        () -> StrategyBuilder.builder()
+factories.add(() -> Strategy.builder()
                 .initialStrategy(() -> true)
                 .cooperates(opponentsPreviousAction -> true)
-                .scoreCounter(someScoreCounter)
+                .info(StrategyInfo.withDefaults("Tit for tat", "made with builder"))
                 .build());
 
 GameManagers.withDefaults().play(factories);
