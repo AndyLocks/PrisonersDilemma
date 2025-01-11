@@ -1,6 +1,5 @@
 package com.locfox.prisoners_dilemma;
 
-import com.locfox.prisoners_dilemma.game_manager.GameManager;
 import com.locfox.prisoners_dilemma.game_manager.GameManagers;
 import com.locfox.prisoners_dilemma.score_counter.ScoreCounter;
 import com.locfox.prisoners_dilemma.strategy.Strategy;
@@ -20,13 +19,9 @@ public class Main implements CommandLineRunner {
     @Autowired
     private List<StrategyFactory<? extends Strategy>> strategyFactories;
 
-    private final GameManager gameManager = GameManagers.withDefaults();
-
     @Override
     public void run(String... args) throws Exception {
-        gameManager.play(strategyFactories);
-
-        strategyFactories.stream()
+        GameManagers.withDefaults().play(strategyFactories).stream()
                 .map(Supplier::get)
                 .flatMap(s -> s.getScoreCounter().asStream())
                 .sorted(Comparator.<ScoreCounter<? extends StrategyInfo>>comparingInt(ScoreCounter::getPoints).reversed())
