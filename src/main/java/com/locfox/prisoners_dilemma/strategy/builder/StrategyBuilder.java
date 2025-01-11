@@ -1,8 +1,9 @@
 package com.locfox.prisoners_dilemma.strategy.builder;
 
 import com.locfox.prisoners_dilemma.score_counter.ScoreCounter;
-import com.locfox.prisoners_dilemma.score_counter.score_counter_creator.ScoreCounterCreator;
-import com.locfox.prisoners_dilemma.score_counter.score_counter_creator.ScoreCounterCreators;
+import com.locfox.prisoners_dilemma.score_counter.score_counter_creator.DefaultScoreCounterProviderImpl;
+import com.locfox.prisoners_dilemma.score_counter.score_counter_creator.ScoreCounterProvider;
+import com.locfox.prisoners_dilemma.score_counter.score_counter_creator.ScoreCounterProviders;
 import com.locfox.prisoners_dilemma.strategy.Strategy;
 import com.locfox.prisoners_dilemma.strategy_factory.factory_creator.CooperationStrategy;
 import com.locfox.prisoners_dilemma.strategy_info.StrategyInfo;
@@ -24,7 +25,7 @@ public class StrategyBuilder {
 
     private CooperationStrategy cooperationStrategy;
     private BooleanSupplier initialCooperationStrategy;
-    private ScoreCounterCreator scoreCounterCreator = ScoreCounterCreators.withDefaults();
+    private ScoreCounterProvider scoreCounterCreator = ScoreCounterProviders.withDefaults();
     private StrategyInfo strategyInfo;
 
     public static StrategyBuilder builder() {
@@ -49,12 +50,12 @@ public class StrategyBuilder {
         return this;
     }
 
-    /// Changes the implementation of [ScoreCounterCreator]
+    /// Changes the implementation of [ScoreCounterProvider]
     ///
-    /// By default: [ScoreCounterCreators#withDefaults()] ([com.locfox.prisoners_dilemma.score_counter.score_counter_creator.DefaultScoreCounterCreatorImpl])
+    /// By default: [ScoreCounterProviders#withDefaults()] ([DefaultScoreCounterProviderImpl])
     ///
-    /// @see ScoreCounterCreator
-    public StrategyBuilder scoreCounterCreator(ScoreCounterCreator scoreCounterCreator) {
+    /// @see ScoreCounterProvider
+    public StrategyBuilder scoreCounterCreator(ScoreCounterProvider scoreCounterCreator) {
         this.scoreCounterCreator = scoreCounterCreator;
         return this;
     }

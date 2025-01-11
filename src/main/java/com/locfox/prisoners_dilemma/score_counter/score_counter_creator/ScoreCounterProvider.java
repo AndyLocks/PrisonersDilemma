@@ -20,7 +20,7 @@ import java.util.function.Function;
 /// ```
 ///
 /// In this case, the method `scoreCounterCreator` always returns a new counter, which is not considered a good practice.
-/// The builder changes the standard implementation to a new [ScoreCounterCreator].
+/// The builder changes the standard implementation to a new [ScoreCounterProvider].
 ///
 /// ---
 ///
@@ -33,11 +33,11 @@ import java.util.function.Function;
 ///
 /// ---
 ///
-/// You can find standard implementations in [ScoreCounterCreators] ([ScoreCounterCreators#withDefaults()])
+/// You can find standard implementations in [ScoreCounterProviders] ([ScoreCounterProviders#withDefaults()])
 ///
 /// ### Implementations
-/// - [DefaultScoreCounterCreatorImpl]: inside it contains a [java.util.HashMap] and returns the required counter for the same strategy data
-public interface ScoreCounterCreator extends Function<StrategyInfo, ScoreCounter<? extends StrategyInfo>> {
+/// - [DefaultScoreCounterProviderImpl]: inside it contains a [java.util.HashMap] and returns the required counter for the same strategy data
+public interface ScoreCounterProvider extends Function<StrategyInfo, ScoreCounter<? extends StrategyInfo>> {
 
     default ScoreCounter<? extends StrategyInfo> createOrGet(StrategyInfo strategyInfo) {
         return apply(strategyInfo);

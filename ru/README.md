@@ -107,27 +107,27 @@ var titForTat = Strategy.builder()
                 .build();
 ```
 
-В `StrategyBuilder` также есть возможность поменять `ScoreCounterCreator`:
+В `StrategyBuilder` также есть возможность поменять `ScoreCounterProvider`:
 
 ```java
 var titForTatStrategy = StrategyBuilder.builder()
                 .info(StrategyInfo.withDefaults("Tit for tat", "made with builder"))
-                .scoreCounterCreator(ScoreCounters::withDefaults)
+                .ScoreCounterProvider(ScoreCounters::withDefaults)
                 .initialStrategy(() -> true)
                 .cooperates(opponentsPreviousAction -> opponentsPreviousAction)
                 .build();
 ```
 
-### ScoreCounterCreator
+### ScoreCounterProvider
 
-Здесь, в методе `scoureCounterCreator` можно передать одну из реализаций. Их можно найти в классе `ScoreCounterCreators`
+Здесь, в методе `scoureCounterCreator` можно передать одну из реализаций. Их можно найти в классе `ScoreCounterProviders`
 или описать с помощью лямбда выражения, так как по сути этот класс является функцией.
 
-`ScoreCounterCreator` используется для преобразования из информации (`StrategyInfo`) в `ScoureCounter`,
+`ScoreCounterProvider` используется для преобразования из информации (`StrategyInfo`) в `ScoureCounter`,
 который в свою очередь считает очки. У каждого вида стратегии должен быть одинаковый счетчик.
 `ScoreCounerCreator` по сути запоминает, какой информации `StrategyInfo` принадлежит какой счетчик `ScoreCounter` и выдает его или создает.
 
-В идеальной имплементации `ScoreCounterCreator` должен возвращать один и тот же `ScoreCounter` по `StrategyInfo` сравненному с помощью метода `Object#equals(Object)`.
+В идеальной имплементации `ScoreCounterProvider` должен возвращать один и тот же `ScoreCounter` по `StrategyInfo` сравненному с помощью метода `Object#equals(Object)`.
 
 ## Factories
 

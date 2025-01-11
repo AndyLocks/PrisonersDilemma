@@ -7,11 +7,11 @@ import com.locfox.prisoners_dilemma.strategy_info.StrategyInfo;
 import java.util.HashMap;
 import java.util.Map;
 
-/// Default implementation of [ScoreCounterCreator].
+/// Default implementation of [ScoreCounterProvider].
 ///
 /// It saves all [StrategyInfo] in [HashMap] (`StrategyInfo` is the key in this case) and returns [ScoreCounter] by key.
 /// If key does not exist -> puts a new key and value
-public class DefaultScoreCounterCreatorImpl implements ScoreCounterCreator {
+public class DefaultScoreCounterProviderImpl implements ScoreCounterProvider {
 
     private static final Map<StrategyInfo, ScoreCounter<? extends StrategyInfo>> scoreCounterHashMap = new HashMap<>();
 

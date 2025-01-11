@@ -111,27 +111,27 @@ var titForTat = Strategy.builder()
         .build();
 ```
 
-`StrategyBuilder` also has the ability to change `ScoreCounterCreator`:
+`StrategyBuilder` also has the ability to change `ScoreCounterProvider`:
 
 ```java
 var titForTatStrategy = StrategyBuilder.builder()
                 .info(StrategyInfo.withDefaults("Tit for tat", "made with builder"))
-                .scoreCounterCreator(ScoreCounters::withDefaults)
+                .ScoreCounterProvider(ScoreCounters::withDefaults)
                 .initialStrategy(() -> true)
                 .cooperates(opponentsPreviousAction -> opponentsPreviousAction)
                 .build();
 ```
 
-### ScoreCounterCreator
+### ScoreCounterProvider
 
-Here, in the `scoureCounterCreator` method, you can pass one of the implementations. They can be found in the `ScoreCounterCreators` class
+Here, in the `scoureCounterCreator` method, you can pass one of the implementations. They can be found in the `ScoreCounterProviders` class
 or described using a lambda expression, since this class is essentially a function.
 
-`ScoreCounterCreator` is used to convert from information (`StrategyInfo`) to `ScoreCounter`,
+`ScoreCounterProvider` is used to convert from information (`StrategyInfo`) to `ScoreCounter`,
 which in turn counts the scores. Each type of strategy should have the same counter.
-`ScoreCounterCreator` essentially remembers which `ScoreCounter` belongs to which `StrategyInfo` and gives it out or creates it.
+`ScoreCounterProvider` essentially remembers which `ScoreCounter` belongs to which `StrategyInfo` and gives it out or creates it.
 
-In an ideal implementation, `ScoreCounterCreator` should return the same `ScoreCounter` for each `StrategyInfo` compared using the `Object#equals(Object)` method.
+In an ideal implementation, `ScoreCounterProvider` should return the same `ScoreCounter` for each `StrategyInfo` compared using the `Object#equals(Object)` method.
 
 ## Factories
 
