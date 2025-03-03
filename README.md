@@ -1,4 +1,4 @@
-**Documentation is also available in Russian!!!**: Check `ru/README.md`
+[**Documentation is also available in Russian!!!**](ru/README.md)
 
 ---
 
